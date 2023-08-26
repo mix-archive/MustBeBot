@@ -52,7 +52,8 @@ const Document = withEmotionCache(
       tags.forEach((tag) => (emotionCache.sheet as any)._insertTag(tag))
       // reset cache to reapply global styles
       clientStyleData?.reset()
-    }, [clientStyleData, emotionCache.sheet])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
       <html lang="en">
