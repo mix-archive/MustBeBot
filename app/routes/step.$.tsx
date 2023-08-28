@@ -61,7 +61,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   while (Object.keys(questions).length < difficulty) {
     const operator = OPERATORS[(Math.random() * OPERATORS.length) | 0],
-      questionId = crypto.randomUUID()
+      questionId = Math.random().toString(16).slice(2)
 
     let question: string, answer: number
 

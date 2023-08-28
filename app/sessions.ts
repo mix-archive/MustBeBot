@@ -1,4 +1,5 @@
 import { createMemorySessionStorage } from '@remix-run/node'
+import { randomBytes } from 'node:crypto'
 
 type SessionData = {
   step: number
@@ -13,7 +14,7 @@ const { getSession, commitSession, destroySession } =
   createMemorySessionStorage<SessionData, SessionFlashData>({
     cookie: {
       name: '__session',
-      secrets: [process.env.SESSION_SECRET as string],
+      secrets: [randomBytes(16).toString('hex')],
     },
   })
 
