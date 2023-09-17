@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto'
 type SessionData = {
   step: number
   answer: Record<string, number>
+  questions: Record<string, string>
 }
 
 type SessionFlashData = {

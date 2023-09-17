@@ -57,10 +57,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const questions: Record<string, string> = {},
     answers: Record<string, number> = {},
     difficulty = 1 << (DIFFICULTY + currentStep),
-    random = () => Math.floor(Math.random() * difficulty)
+    random = () => Math.floor(Math.random() * difficulty) + 1
 
   while (Object.keys(questions).length < difficulty) {
-    const operator = OPERATORS[(Math.random() * OPERATORS.length) | 0],
+    const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)],
       questionId = Math.random().toString(16).slice(2)
 
     let question: string, answer: number
@@ -97,6 +97,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   session.set('answer', answers)
+  session.set('questions', questions)
 
   return json(
     {
@@ -134,7 +135,13 @@ export const action = async ({ request }: ActionArgs) => {
   )
 
   if (wrongAnswers.length > 0) {
-    session.flash('error', 'Wrong answer')
+    const questions = session.get('questions')!
+    let waString = ''
+    for (const [id, answer] of wrongAnswers) {
+      const userAnswer = body.get(`answer_${id}`)!
+      waString += `${questions[id]} (${userAnswer} != ${answer})\n`
+    }
+    session.flash('error', `Wrong answer(s):\n${waString}`)
     return redirect(request.url, {
       headers: {
         'Set-Cookie': await commitSession(session),
